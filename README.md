@@ -81,3 +81,27 @@ await telemetry.timer('SELECT streams')(() => db.query('...'));
 ```
 
 Environment: `CMO_ENDPOINT`, `CMO_TELEMETRY_KEY`.
+
+
+## Monitoring: revenue forwarder
+
+You can also feed the CMO.ai revenue ledger from inside StreamBox (subscriptions,
+ad revenue, etc.):
+
+```js
+const cmoRevenue = require('./server/cmo-revenue');
+await cmoRevenue.report({
+  product: 'streambox',
+  provider: 'subscription',
+  kind: 'subscription',
+  amount: 9.99,
+  currency: 'USD',
+  reference: '<your-order-id>',
+  customer: 'user@example.com',
+  detail: 'pro-plan'
+});
+```
+
+Set `CMO_ENDPOINT` (e.g. `https://your-cmo-host`) and `CMO_REVENUE_KEY`
+(the CMO `.env`'s `REVENUE_INGEST_KEY`) in the StreamBox environment. The
+forwarder never throws; unset vars make it a no-op.
