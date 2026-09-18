@@ -59,3 +59,25 @@ streambox/
 ## License
 
 MIT
+
+## CMO.ai telemetry
+
+StreamBox reports API route and DB query latency to the CMO.ai studio monitor,
+so the studio's SEO/growth agents can act on real backend performance.
+
+```js
+const { createTelemetry } = require('./server/middleware/cmo-telemetry');
+
+const telemetry = createTelemetry({
+  product: 'streambox',
+  endpoint: process.env.CMO_ENDPOINT,     // e.g. https://your-cmo-host
+  key: process.env.CMO_TELEMETRY_KEY,     // TELEMETRY_INGEST_KEY from the CMO .env
+});
+
+app.use(telemetry);                        // times every API request
+
+// Time a DB call:
+await telemetry.timer('SELECT streams')(() => db.query('...'));
+```
+
+Environment: `CMO_ENDPOINT`, `CMO_TELEMETRY_KEY`.
